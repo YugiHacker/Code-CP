@@ -1,0 +1,36 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 1000006
+using namespace std;
+int n, d;
+long long cnt[maxn];
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> d;
+    for (int i=1; i<=n; i++)
+    {
+        int x; cin >> x;
+        cnt[x]++;
+    }
+    int j = 0;
+    long long s = 0;
+    long long ans = 0;
+    for (int i=1; i<=1000000; i++) if (cnt[i])
+    {
+        while (j < i && i - j > d)
+        {
+            s -= cnt[j];
+            j++;
+        }
+        ans += cnt[i] * s * (s-1) / 2 + cnt[i] * (cnt[i] - 1) / 2 * s + cnt[i] * (cnt[i] - 1) * (cnt[i] - 2) / 6;
+        s += cnt[i];
+    }
+    cout << ans;
+}
