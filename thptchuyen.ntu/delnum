@@ -1,0 +1,25 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+#define el cout<<"\n"
+#define	f0(i,n) for(int i=0;i<n;i++)
+#define f1(i,n) for(int i=1;i<=n;i++)
+#define maxn 100005
+int n, a[maxn];
+vector <int> v;
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n;
+    f1 (i, n)
+    {
+        cin >> a[i];
+        while (v.size() > 1 && v.back() < v[v.size()-2] && v.back() < a[i]) v.pop_back();
+        v.push_back(a[i]);
+    }
+    cout << v.size();
+    return 0;
+}
