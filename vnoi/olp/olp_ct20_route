@@ -1,0 +1,91 @@
+//https://oj.vnoi.info/problem/olp_ct20_route
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;i++)
+#define f1(i,n) for(int i=1;i<=n;i++)
+#define maxn 1003
+#define fi first
+#define se second
+using namespace std;
+int n, m, f2[maxn][maxn], f5[maxn][maxn];
+pair<int, int> a[maxn][maxn];
+int u, v;
+string s;
+void calc(int f[maxn][maxn], int k)
+{
+    int x=1, y=1;
+    while (x<n || y<m)
+    {
+        if (x == n) y++, s+='L';
+        else if (y == m) x++, s+='D';
+        else
+        {
+            int pre = f[x][y] - (k?a[x][y].se:a[x][y].fi);
+            if (pre == f[x+1][y]) x++, s+='D';
+            else y++, s+='L';
+        }
+    }
+}
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> m;
+    f1 (i, n) f1 (j, m)
+    {
+        int x;
+        cin >> x;
+        if (x == 0)
+        {
+            if (j==1)
+            {
+                cout << 1; el;
+                f1 (i, n-1) cout << 'D';
+                f1 (i, m-1) cout << 'L';
+                return 0;
+            }
+            if (u!=i) u = i, v = j;
+            a[i][j].fi = 2000;
+            a[i][j].se = 2000;
+            continue;
+        }
+        while (x%2 == 0) x/=2, a[i][j].fi ++;
+        while (x%5 == 0) x/=5, a[i][j].se ++;
+    }
+    f1 (i, n) f2[i][m+1] = f5[i][m+1] = 2000;
+    f1 (i, m) f2[n+1][i] = f5[n+1][i] = 2000;
+    for (int i=n; i; i--) for (int j=m; j; j--)
+    {
+        if (i==n && j==m)
+        {
+            f2[n][m] = a[n][m].fi;
+            f5[n][m] = a[n][m].se;
+            continue;
+        }
+        f2[i][j] = min(f2[i+1][j], f2[i][j+1]) + a[i][j].fi;
+        f5[i][j] = min(f5[i+1][j], f5[i][j+1]) + a[i][j].se;
+    }
+    string t;
+    if (min(f2[1][1], f5[1][1]) >= 1 && u)
+    {
+        for (int i=1; i<u; i++) t+='D';
+        for (int i=1; i<v; i++) t+='L';
+        for (int i=u; i<n; i++) t+='D';
+        for (int i=v; i<m; i++) t+='L';
+    }
+    if (f2[1][1] < f5[1][1]) calc(f2, 0);
+    else calc(f5, 1);
+    if (t.size()!=0)
+    {
+        cout << 1; el;
+        cout << min(t, s);
+    }
+    else
+    {
+        cout << min(f2[1][1], f5[1][1]); el;
+        cout << s;
+    }
+}
