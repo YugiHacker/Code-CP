@@ -1,0 +1,38 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 5003
+using namespace std;
+int n, a[maxn], b[maxn];
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n;
+    f1 (i, n) cin >> a[i];
+    long long ans[3] = {0, 0, 0};
+    sort(a+1, a+n+1);
+    f1 (i, n) b[i] = a[i] * a[i];
+    f1 (i, n)
+    {
+        int k[3] = {0, 0, 0};
+        for (int j=i+1; j<=n; ++j)
+        {
+            k[0] = max(k[0], j);
+            while (k[0] < n && a[k[0]+1] < a[i] + a[j] && b[k[0]+1] < b[i] + b[j]) ++k[0];
+            k[1] = max(k[1], k[0]);
+            while (k[1] < n && a[k[1]+1] < a[i] + a[j] && b[k[1]+1] == b[i] + b[j]) ++k[1];
+            k[2] = max(k[2], k[1]);
+            while (k[2] < n && a[k[2]+1] < a[i] + a[j]) ++k[2];
+            ans[2] += k[2] - k[1];
+            ans[1] += k[1] - k[0];
+            ans[0] += k[0] - j;
+        }
+    }
+    cout << ans[0] << ' ' << ans[1] << ' ' << ans[2];
+}
+    
