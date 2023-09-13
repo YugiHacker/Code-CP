@@ -1,0 +1,87 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 100005
+using namespace std;
+
+int n, m, q, a[maxn], l[maxn], r[maxn];
+int p[maxn];
+int get(int x){return (x == p[x] ? x : p[x] = get(p[x]));}
+void unite(int x, int y)
+{
+    x = get(x); y = get(y);
+    if (x != y) p[x] = y;
+}
+
+struct edge
+{
+    int u, v;
+}b[maxn];
+
+vector <int> colors[maxn];
+
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> m >> q;
+    f1 (i, n)
+    {
+        cin >> a[i];
+        colors[a[i]].push_back(i);
+    }
+
+    for (int i=1; i<=q; i++) cin >> b[i].u >> b[i].v;
+
+    for (int i=1; i<=m; i++)
+    {
+        l[i] = -1;
+        r[i] = q+1;
+    }
+
+    for(;;)
+    {
+        bool answered = 1;
+        vector<vector<int>> queries(q+1);
+        for (int i=1; i<=m; i++)
+        {
+            if (r[i] - l[i] > 1) answered = 0;
+            queries[(l[i]+r[i])/2].push_back(i);
+        }
+
+        if (answered) break;
+
+        for (int i=1; i<=n; i++) p[i] = i; /// reset DSU
+
+        for (int i=0; i<=q; i++)
+        {
+            if (i != 0)
+            {
+                int u = get(b[i].u), v = get(b[i].v);
+                unite(u, v);
+            }
+
+            for (int color : queries[i])
+            {
+                int u = get(colors[color][0]);
+                bool ok = 1;
+                for (int id : colors[color])
+                {
+                    int v = get(id);
+                    if (u != v) ok = 0;
+                }
+                if (ok) r[color] = i;
+                else l[color] = i;
+            }
+        }
+    }
+    for (int i=1; i<=m; ++i)
+    {
+        if (r[i] == q+1) r[i] = -1;
+        cout << r[i] << '\n';
+    }
+}
