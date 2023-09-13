@@ -1,0 +1,60 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 100005
+using namespace std;
+
+int n, m, q, a[maxn];
+int p[maxn], d[maxn], ans[maxn];
+/// d[c] : Số đỉnh màu c trong đồ thị ban đầu
+/// ans[c] : Kết quả cho màu c
+map <int, int> cnt[maxn]; /// cnt[u] : Chứa tập màu c và số lượng tương ứng của màu c trong thành phần liên thông chứa u
+
+int get(int u) {return p[u] == u ? u : p[u] = get(p[u]);}
+
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m >> q;
+
+    for (int i=1; i<=n; i++)
+    {
+        cin >> a[i];
+        d[a[i]]++;
+    }
+
+    for (int i=1; i<=m; i++)
+        ans[i] = -1;
+
+    for (int i=1; i<=n; i++)
+    {
+        p[i] = i;
+        cnt[i][a[i]]++;
+        if (d[a[i]] == 1) ans[a[i]] = 0; /// Trường hợp chỉ có một đỉnh có màu a[i]
+    }
+
+    for (int i=1; i<=q; i++)
+    {
+        int u, v; cin >> u >> v;
+        u = get(u), v = get(v);
+        if (u != v)
+        {
+            if (cnt[u].size() < cnt[v].size()) swap(u, v);
+            p[v] = u;
+            for (auto [color, w] : cnt[v])
+            {
+                cnt[u][color] += w;
+                if (cnt[u][color] == d[color] && ans[color] == -1)
+                    ans[color] = i; /// Nếu hợp thành phần chứa u - v lại khiến số màu c bằng số màu trong đồ thị ban đầu, thì ta lưu lại kết quả cho màu c
+            }
+        }
+    }
+    for (int i=1; i<=m; i++)
+        cout << ans[i] << '\n';
+}
