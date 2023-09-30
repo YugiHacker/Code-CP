@@ -1,0 +1,69 @@
+/*
+	www.youtube.com/YugiHackerChannel
+	oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn
+using namespace std;
+vector <string> a, b;
+string s;
+string censore(string s)
+{
+    string tmp = s;
+    for (char &c:tmp) if (c <= 'Z') c += 32;
+    for (string t:a)
+    {
+        if (t.size() <= tmp.size())
+        {
+            for (int j=0; j+t.size() <= tmp.size(); ++j)
+            {
+                if (tmp.substr(j, (int) t.size()) == t)
+                {
+                    for (int i = 1; i < t.size() - 1; i++)
+                    {
+                        s[j+i] = '*';
+                    }
+                    return s;
+                }
+            }
+        }
+    }
+    return s;
+}
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    getline(cin, s);
+    stringstream ss(s);
+    getline(cin, s);
+    string t;
+    while (ss >> t)
+    {
+        for (char &c:t) if (c <= 'Z') c += 32;
+        a.push_back(t);
+    }
+    ss = (stringstream)(s);
+    while (ss >> t)
+    {
+        if (t.back() == ',') t.pop_back();
+        b.push_back(t);
+    }
+    for (string &s:b)
+    {
+        s = censore(s);
+    }
+    int cur = 0;
+    for (int i=0; i<s.size(); ++i)
+    {
+        if (i == 0 || (s[i] != ' ' && s[i-1] == ' '))
+        {
+            for (int j=0; j<b[cur].size(); j++)
+                s[i+j] = b[cur][j];
+            cur++;
+        }
+    }
+    cout << s;
+}
