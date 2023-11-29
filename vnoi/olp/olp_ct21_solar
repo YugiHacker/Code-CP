@@ -1,0 +1,98 @@
+/*
+    www.youtube.com/YugiHackerChannel
+    oj.vnoi.info/user/YugiHackerKhongCopCode
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 1000006
+using namespace std;
+int n, q, a[maxn], D;
+int mi[maxn*4];
+long long s[maxn*4];
+int get_min(int id, int l, int r, int u, int v)
+{
+    if (l > v || r < u) return 0;
+    if (u <= l && r <= v) return mi[id];
+    int m = (l+r)/2;
+    int p1 = get_min(id*2, l, m, u, v);
+    int p2 = get_min(id*2+1, m+1, r, u, v);
+    if (a[p1] <= a[p2]) return p1;
+    else return p2;
+}
+long long get_sum(int id, int l, int r, int u, int v)
+{
+    if (l > v || r < u) return 0;
+    if (u <= l && r <= v) return s[id];
+    int m = (l+r)/2;
+    return get_sum(id*2, l, m, u, v) + get_sum(id*2+1, m+1, r, u, v);
+}
+void up(int id, int l, int r, int p, int v)
+{
+    if (l > p || r < p) return;
+    if (l == r)
+    {
+        a[p] = v;
+        s[id] = v;
+        mi[id] = l;
+        return;
+    }
+    int m = (l+r)/2;
+    up(id*2, l, m, p, v);
+    up(id*2+1, m+1, r, p, v);
+    if (a[mi[id*2]] <= a[mi[id*2+1]]) mi[id] = mi[id*2];
+    else mi[id] = mi[id*2+1];
+    s[id] = s[id*2] + s[id*2+1];
+}
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> q;
+    a[0] = 1e9;
+    f1 (i, n) cin >> a[i], up(1, 1, n, i, a[i]);
+    while (q--)
+    {
+        int t; cin >> t;
+        if (t == 1)
+        {
+            int d;
+            cin >> d;
+            D += d;
+            if (D > n) D %= n;
+        }
+        if (t == 2)
+        {
+            int l, r, v;
+            cin >> l >> r >> v;
+            l -= D;
+            r -= D;
+            if (l <= 0) l += n;
+            if (r <= 0) r += n;
+            if (l <= r)
+            {
+                int p = get_min(1, 1, n, l, r);
+                up(1, 1, n, p, v);
+            }
+            else
+            {
+                int p1 = get_min(1, 1, n, l, n);
+                int p2 = get_min(1, 1, n, 1, r);
+                if (a[p1] <= a[p2]) up(1, 1, n, p1, v);
+                else up(1, 1, n, p2, v);
+            }
+        }
+        if (t == 3)
+        {
+            int l, r;
+            cin >> l >> r;
+            l -= D;
+            r -= D;
+            if (l <= 0) l += n;
+            if (r <= 0) r += n;
+            if (l <= r) cout << get_sum(1, 1, n, l, r);
+            else cout << get_sum(1, 1, n, l, n) + get_sum(1, 1, n, 1, r);
+            el;
+        }
+    }
+}
